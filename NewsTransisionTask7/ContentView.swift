@@ -26,13 +26,15 @@ struct ContentView: View {
             ForEach(Array(data.enumerated()), id: \.offset) { index, datum in
                 if index == indexShow {
                     PageView(datum: datum)
+                        .transition(.inOutTransition)
                         .onTapGesture {
-                            if indexShow == 3 {
-                                indexShow = 0
-                            } else {
-                                indexShow += 1
+                            withAnimation(Animation.spring()) {
+                                if indexShow == 3 {
+                                    indexShow = 0
+                                } else {
+                                    indexShow += 1
+                                }
                             }
-                            
                         }
                 } else {
                     /*@START_MENU_TOKEN@*/EmptyView()/*@END_MENU_TOKEN@*/
@@ -87,8 +89,22 @@ struct PageView: View {
                     .foregroundColor(.gray)
                     .font(.system(.body, design: .rounded))
             }.padding(.horizontal,10)
-            
         }
-        
+    }
+}
+
+//MARK: - TRANSITION
+extension AnyTransition {
+    static var inOutTransition : AnyTransition {
+        AnyTransition.asymmetric(
+            insertion:
+                    .offset(x: -500, y: 0)
+                        .combined(
+                            with:
+                                    .scale(scale: 0, anchor: .bottomTrailing)),
+            removal: .offset(x: -500, y: 0)
+                .combined(
+                    with:
+                            .scale(scale: 0, anchor: .bottomTrailing)))
     }
 }
